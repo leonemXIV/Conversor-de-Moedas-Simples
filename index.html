@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Moedas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .input-group select, .input-group input {
+            border: 1px solid #d1d5db;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            outline: none;
+        }
+        .input-group input {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="container p-8 space-y-6">
+        <h1 class="text-3xl font-bold text-center text-gray-800">Conversor de Moedas</h1>
+        
+        <div class="space-y-4">
+            <!-- Group for 'From' currency -->
+            <div class="input-group">
+                <input id="amountFrom" type="number" placeholder="Digite o valor" class="w-full text-gray-800 focus:ring-2 focus:ring-indigo-500 transition-all">
+                <select id="currencyFrom" class="text-gray-800 bg-white">
+                    <option value="USD">USD - Dólar Americano</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="BRL" selected>BRL - Real Brasileiro</option>
+                    <option value="JPY">JPY - Iene Japonês</option>
+                </select>
+            </div>
+
+            <div class="flex justify-center">
+                <!-- Swap button to change currencies -->
+                <button id="swapBtn" class="p-2 bg-indigo-500 text-white rounded-full hover:bg-indigo-600 transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Group for 'To' currency -->
+            <div class="input-group">
+                <input id="amountTo" type="number" placeholder="Valor convertido" class="w-full text-gray-800 bg-gray-200 cursor-not-allowed" readonly>
+                <select id="currencyTo" class="text-gray-800 bg-white">
+                    <option value="USD" selected>USD - Dólar Americano</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="BRL">BRL - Real Brasileiro</option>
+                    <option value="JPY">JPY - Iene Japonês</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const amountFromEl = document.getElementById('amountFrom');
+            const amountToEl = document.getElementById('amountTo');
+            const currencyFromEl = document.getElementById('currencyFrom');
+            const currencyToEl = document.getElementById('currencyTo');
+            const swapBtn = document.getElementById('swapBtn');
+
+            // Exemplo de taxas de câmbio fixas em relação ao USD (Dólar Americano)
+            const exchangeRates = {
+                USD: 1.0,
+                EUR: 0.93,
+                BRL: 5.0,
+                JPY: 157.0
+            };
+
+            function convertCurrency() {
+                const amount = parseFloat(amountFromEl.value);
+                const fromCurrency = currencyFromEl.value;
+                const toCurrency = currencyToEl.value;
+
+                if (isNaN(amount) || amount <= 0) {
+                    amountToEl.value = '';
+                    return;
+                }
+
+                // Converter o valor de 'from' para uma base comum (USD)
+                const amountInUSD = amount / exchangeRates[fromCurrency];
+                
+                // Converter de USD para a moeda 'to'
+                const convertedAmount = amountInUSD * exchangeRates[toCurrency];
+                
+                amountToEl.value = convertedAmount.toFixed(2);
+            }
+
+            function swapCurrencies() {
+                const fromValue = currencyFromEl.value;
+                const toValue = currencyToEl.value;
+                
+                currencyFromEl.value = toValue;
+                currencyToEl.value = fromValue;
+
+                convertCurrency();
+            }
+
+            // Event listeners
+            amountFromEl.addEventListener('input', convertCurrency
