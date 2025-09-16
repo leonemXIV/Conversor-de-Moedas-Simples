@@ -1,125 +1,225 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversor de Moedas</title>
+    <title>Gerador de Senhas</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 1rem;
         }
         .container {
-            max-width: 600px;
-            margin: 4rem auto;
-            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
             background-color: #ffffff;
             border-radius: 1rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+            text-align: center;
         }
         .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        label {
+            display: block;
+            color: #4b5563;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: #1f2937;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+        .checkbox-container {
             display: flex;
             align-items: center;
-            gap: 1rem;
         }
-        .input-group select, .input-group input {
-            border: 1px solid #d1d5db;
-            padding: 0.5rem;
+        .checkbox-container input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #3b82f6;
+            cursor: pointer;
+        }
+        .checkbox-container label {
+            margin-left: 0.5rem;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+        #generateBtn {
+            width: 100%;
+            padding: 1rem;
+            background-color: #3b82f6;
+            color: #ffffff;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #generateBtn:hover {
+            background-color: #2563eb;
+        }
+        #passwordOutput {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #e5e7eb;
             border-radius: 0.5rem;
-            outline: none;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            word-wrap: break-word;
+            min-height: 3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
-        .input-group input {
-            flex-grow: 1;
+        #copyBtn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #9ca3af;
+            color: #ffffff;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        #passwordOutput:hover #copyBtn {
+            opacity: 1;
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body>
 
-    <div class="container p-8 space-y-6">
-        <h1 class="text-3xl font-bold text-center text-gray-800">Conversor de Moedas</h1>
-        
-        <div class="space-y-4">
-            <!-- Group for 'From' currency -->
-            <div class="input-group">
-                <input id="amountFrom" type="number" placeholder="Digite o valor" class="w-full text-gray-800 focus:ring-2 focus:ring-indigo-500 transition-all">
-                <select id="currencyFrom" class="text-gray-800 bg-white">
-                    <option value="USD">USD - Dólar Americano</option>
-                    <option value="EUR">EUR - Euro</option>
-                    <option value="BRL" selected>BRL - Real Brasileiro</option>
-                    <option value="JPY">JPY - Iene Japonês</option>
-                </select>
-            </div>
+<div class="container">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Gerador de Senhas</h1>
 
-            <div class="flex justify-center">
-                <!-- Swap button to change currencies -->
-                <button id="swapBtn" class="p-2 bg-indigo-500 text-white rounded-full hover:bg-indigo-600 transition-colors duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                    </svg>
-                </button>
-            </div>
-            
-            <!-- Group for 'To' currency -->
-            <div class="input-group">
-                <input id="amountTo" type="number" placeholder="Valor convertido" class="w-full text-gray-800 bg-gray-200 cursor-not-allowed" readonly>
-                <select id="currencyTo" class="text-gray-800 bg-white">
-                    <option value="USD" selected>USD - Dólar Americano</option>
-                    <option value="EUR">EUR - Euro</option>
-                    <option value="BRL">BRL - Real Brasileiro</option>
-                    <option value="JPY">JPY - Iene Japonês</option>
-                </select>
-            </div>
+    <div class="input-group">
+        <label for="length">Comprimento da Senha</label>
+        <input type="number" id="length" value="12" min="1" max="50">
+    </div>
+
+    <div class="checkbox-group">
+        <div class="checkbox-container">
+            <input type="checkbox" id="uppercase" checked>
+            <label for="uppercase">Maiúsculas (A-Z)</label>
+        </div>
+        <div class="checkbox-container">
+            <input type="checkbox" id="lowercase" checked>
+            <label for="lowercase">Minúsculas (a-z)</label>
+        </div>
+        <div class="checkbox-container">
+            <input type="checkbox" id="numbers" checked>
+            <label for="numbers">Números (0-9)</label>
+        </div>
+        <div class="checkbox-container">
+            <input type="checkbox" id="symbols" checked>
+            <label for="symbols">Símbolos (!@#$)</label>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const amountFromEl = document.getElementById('amountFrom');
-            const amountToEl = document.getElementById('amountTo');
-            const currencyFromEl = document.getElementById('currencyFrom');
-            const currencyToEl = document.getElementById('currencyTo');
-            const swapBtn = document.getElementById('swapBtn');
+    <button id="generateBtn" class="mt-8">Gerar Senha</button>
 
-            // Exemplo de taxas de câmbio fixas em relação ao USD (Dólar Americano)
-            const exchangeRates = {
-                USD: 1.0,
-                EUR: 0.93,
-                BRL: 5.0,
-                JPY: 157.0
-            };
+    <div id="passwordOutput">
+        <p>Sua senha aparecerá aqui.</p>
+        <button id="copyBtn" onclick="copyToClipboard()">Copiar</button>
+    </div>
+</div>
 
-            function convertCurrency() {
-                const amount = parseFloat(amountFromEl.value);
-                const fromCurrency = currencyFromEl.value;
-                const toCurrency = currencyToEl.value;
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const lengthInput = document.getElementById('length');
+        const uppercaseCheckbox = document.getElementById('uppercase');
+        const lowercaseCheckbox = document.getElementById('lowercase');
+        const numbersCheckbox = document.getElementById('numbers');
+        const symbolsCheckbox = document.getElementById('symbols');
+        const generateBtn = document.getElementById('generateBtn');
+        const passwordOutput = document.getElementById('passwordOutput');
 
-                if (isNaN(amount) || amount <= 0) {
-                    amountToEl.value = '';
-                    return;
-                }
+        const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+        const numberChars = '0123456789';
+        const symbolChars = '!@#$%^&*()_+~`|}{[]:;?><,./-=';
 
-                // Converter o valor de 'from' para uma base comum (USD)
-                const amountInUSD = amount / exchangeRates[fromCurrency];
-                
-                // Converter de USD para a moeda 'to'
-                const convertedAmount = amountInUSD * exchangeRates[toCurrency];
-                
-                amountToEl.value = convertedAmount.toFixed(2);
+        function generatePassword() {
+            const length = parseInt(lengthInput.value);
+            let chars = '';
+            let password = '';
+
+            // Construir a string de caracteres com base nas opções selecionadas
+            if (uppercaseCheckbox.checked) chars += uppercaseChars;
+            if (lowercaseCheckbox.checked) chars += lowercaseChars;
+            if (numbersCheckbox.checked) chars += numberChars;
+            if (symbolsCheckbox.checked) chars += symbolChars;
+
+            // Verificar se pelo menos uma opção foi selecionada
+            if (chars === '') {
+                passwordOutput.innerHTML = '<p>Selecione pelo menos um tipo de caractere.</p>';
+                return;
             }
 
-            function swapCurrencies() {
-                const fromValue = currencyFromEl.value;
-                const toValue = currencyToEl.value;
-                
-                currencyFromEl.value = toValue;
-                currencyToEl.value = fromValue;
-
-                convertCurrency();
+            // Gerar a senha
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * chars.length);
+                password += chars[randomIndex];
             }
 
-            // Event listeners
-            amountFromEl.addEventListener('input', convertCurrency
+            // Exibir a senha
+            passwordOutput.innerHTML = `<p>${password}</p><button id="copyBtn" onclick="copyToClipboard()">Copiar</button>`;
+        }
+
+        generateBtn.addEventListener('click', generatePassword);
+
+        // Gera a senha inicial
+        generatePassword();
+
+        // Adiciona um listener para atualizar o conteúdo da senha a cada mudança na caixa de seleção
+        uppercaseCheckbox.addEventListener('change', generatePassword);
+        lowercaseCheckbox.addEventListener('change', generatePassword);
+        numbersCheckbox.addEventListener('change', generatePassword);
+        symbolsCheckbox.addEventListener('change', generatePassword);
+        lengthInput.addEventListener('change', generatePassword);
+    });
+
+    function copyToClipboard() {
+        const passwordText = document.querySelector('#passwordOutput p').innerText;
+        const textarea = document.createElement('textarea');
+        textarea.value = passwordText;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+        
+        const copyBtn = document.getElementById('copyBtn');
+        copyBtn.innerText = 'Copiado!';
+        setTimeout(() => {
+            copyBtn.innerText = 'Copiar';
+        }, 2000);
+    }
+</script>
+
+</body>
+</html>
