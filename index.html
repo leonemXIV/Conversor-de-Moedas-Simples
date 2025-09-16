@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Senhas</title>
+    <title>Calculadora Simples</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f0f4f8;
@@ -16,210 +17,155 @@
             height: 100vh;
             padding: 1rem;
         }
-        .container {
-            max-width: 500px;
-            width: 100%;
-            background-color: #ffffff;
+        .calculator {
+            background-color: #374151;
             border-radius: 1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            padding: 2.5rem;
-            text-align: center;
-        }
-        .input-group {
-            margin-bottom: 1.5rem;
-            text-align: left;
-        }
-        label {
-            display: block;
-            color: #4b5563;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-        input[type="number"] {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            color: #1f2937;
-        }
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin-top: 1rem;
-            justify-content: center;
-        }
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-        }
-        .checkbox-container input[type="checkbox"] {
-            width: 1.25rem;
-            height: 1.25rem;
-            accent-color: #3b82f6;
-            cursor: pointer;
-        }
-        .checkbox-container label {
-            margin-left: 0.5rem;
-            margin-bottom: 0;
-            cursor: pointer;
-        }
-        #generateBtn {
-            width: 100%;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.5);
             padding: 1rem;
-            background-color: #3b82f6;
+            max-width: 320px;
+            width: 100%;
+        }
+        .display {
+            background-color: #111827;
             color: #ffffff;
-            font-weight: 600;
+            font-size: 2.5rem;
+            text-align: right;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+        }
+        .btn {
+            background-color: #4b5563;
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 500;
+            padding: 1.5rem 0;
             border-radius: 0.75rem;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.2s, transform 0.1s;
         }
-        #generateBtn:hover {
+        .btn:hover {
+            background-color: #6b7280;
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .btn-operator {
+            background-color: #3b82f6;
+        }
+        .btn-operator:hover {
             background-color: #2563eb;
         }
-        #passwordOutput {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background-color: #e5e7eb;
-            border-radius: 0.5rem;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1f2937;
-            word-wrap: break-word;
-            min-height: 3rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
+        .btn-equals {
+            background-color: #10b981;
+            grid-column: span 2;
         }
-        #copyBtn {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background-color: #9ca3af;
-            color: #ffffff;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
-            font-size: 0.75rem;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.3s;
+        .btn-equals:hover {
+            background-color: #059669;
         }
-        #passwordOutput:hover #copyBtn {
-            opacity: 1;
+        .btn-clear {
+            background-color: #ef4444;
+        }
+        .btn-clear:hover {
+            background-color: #dc2626;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Gerador de Senhas</h1>
+    <div class="calculator">
+        <!-- Display -->
+        <div class="display" id="display">0</div>
 
-    <div class="input-group">
-        <label for="length">Comprimento da Senha</label>
-        <input type="number" id="length" value="12" min="1" max="50">
+        <!-- Buttons -->
+        <div class="buttons-grid">
+            <button class="btn btn-clear" onclick="clearDisplay()">C</button>
+            <button class="btn btn-operator" onclick="appendOperator('/')">/</button>
+            <button class="btn btn-operator" onclick="appendOperator('*')">*</button>
+            <button class="btn" onclick="appendNumber('7')">7</button>
+            <button class="btn" onclick="appendNumber('8')">8</button>
+            <button class="btn" onclick="appendNumber('9')">9</button>
+            <button class="btn btn-operator" onclick="appendOperator('-')">-</button>
+            <button class="btn" onclick="appendNumber('4')">4</button>
+            <button class="btn" onclick="appendNumber('5')">5</button>
+            <button class="btn" onclick="appendNumber('6')">6</button>
+            <button class="btn btn-operator" onclick="appendOperator('+')">+</button>
+            <button class="btn" onclick="appendNumber('1')">1</button>
+            <button class="btn" onclick="appendNumber('2')">2</button>
+            <button class="btn" onclick="appendNumber('3')">3</button>
+            <button class="btn" onclick="appendNumber('0')">0</button>
+            <button class="btn" onclick="appendNumber('.')">.</button>
+            <button class="btn btn-equals" onclick="calculate()">=</button>
+        </div>
     </div>
 
-    <div class="checkbox-group">
-        <div class="checkbox-container">
-            <input type="checkbox" id="uppercase" checked>
-            <label for="uppercase">Maiúsculas (A-Z)</label>
-        </div>
-        <div class="checkbox-container">
-            <input type="checkbox" id="lowercase" checked>
-            <label for="lowercase">Minúsculas (a-z)</label>
-        </div>
-        <div class="checkbox-container">
-            <input type="checkbox" id="numbers" checked>
-            <label for="numbers">Números (0-9)</label>
-        </div>
-        <div class="checkbox-container">
-            <input type="checkbox" id="symbols" checked>
-            <label for="symbols">Símbolos (!@#$)</label>
-        </div>
-    </div>
+    <script>
+        const display = document.getElementById('display');
+        let currentInput = '';
+        let result = '';
 
-    <button id="generateBtn" class="mt-8">Gerar Senha</button>
-
-    <div id="passwordOutput">
-        <p>Sua senha aparecerá aqui.</p>
-        <button id="copyBtn" onclick="copyToClipboard()">Copiar</button>
-    </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const lengthInput = document.getElementById('length');
-        const uppercaseCheckbox = document.getElementById('uppercase');
-        const lowercaseCheckbox = document.getElementById('lowercase');
-        const numbersCheckbox = document.getElementById('numbers');
-        const symbolsCheckbox = document.getElementById('symbols');
-        const generateBtn = document.getElementById('generateBtn');
-        const passwordOutput = document.getElementById('passwordOutput');
-
-        const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
-        const numberChars = '0123456789';
-        const symbolChars = '!@#$%^&*()_+~`|}{[]:;?><,./-=';
-
-        function generatePassword() {
-            const length = parseInt(lengthInput.value);
-            let chars = '';
-            let password = '';
-
-            // Construir a string de caracteres com base nas opções selecionadas
-            if (uppercaseCheckbox.checked) chars += uppercaseChars;
-            if (lowercaseCheckbox.checked) chars += lowercaseChars;
-            if (numbersCheckbox.checked) chars += numberChars;
-            if (symbolsCheckbox.checked) chars += symbolChars;
-
-            // Verificar se pelo menos uma opção foi selecionada
-            if (chars === '') {
-                passwordOutput.innerHTML = '<p>Selecione pelo menos um tipo de caractere.</p>';
+        function appendNumber(number) {
+            // Limpa o display se o resultado anterior foi exibido
+            if (result !== '' && !isOperator(currentInput.slice(-1))) {
+                currentInput = '';
+                result = '';
+            }
+            // Evita múltiplos pontos decimais
+            if (number === '.' && currentInput.includes('.')) {
                 return;
             }
-
-            // Gerar a senha
-            for (let i = 0; i < length; i++) {
-                const randomIndex = Math.floor(Math.random() * chars.length);
-                password += chars[randomIndex];
+            // Evita a adição de pontos no início
+            if (number === '.' && currentInput === '') {
+                currentInput += '0';
             }
-
-            // Exibir a senha
-            passwordOutput.innerHTML = `<p>${password}</p><button id="copyBtn" onclick="copyToClipboard()">Copiar</button>`;
+            currentInput += number;
+            display.textContent = currentInput;
         }
 
-        generateBtn.addEventListener('click', generatePassword);
+        function appendOperator(operator) {
+            // Evita que o operador seja o primeiro caractere
+            if (currentInput === '') return;
+            // Substitui o último operador se um novo for inserido
+            if (isOperator(currentInput.slice(-1))) {
+                currentInput = currentInput.slice(0, -1) + operator;
+            } else {
+                currentInput += operator;
+            }
+            display.textContent = currentInput;
+        }
 
-        // Gera a senha inicial
-        generatePassword();
+        function isOperator(char) {
+            return ['+', '-', '*', '/'].includes(char);
+        }
 
-        // Adiciona um listener para atualizar o conteúdo da senha a cada mudança na caixa de seleção
-        uppercaseCheckbox.addEventListener('change', generatePassword);
-        lowercaseCheckbox.addEventListener('change', generatePassword);
-        numbersCheckbox.addEventListener('change', generatePassword);
-        symbolsCheckbox.addEventListener('change', generatePassword);
-        lengthInput.addEventListener('change', generatePassword);
-    });
+        function clearDisplay() {
+            currentInput = '';
+            result = '';
+            display.textContent = '0';
+        }
 
-    function copyToClipboard() {
-        const passwordText = document.querySelector('#passwordOutput p').innerText;
-        const textarea = document.createElement('textarea');
-        textarea.value = passwordText;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        textarea.remove();
-        
-        const copyBtn = document.getElementById('copyBtn');
-        copyBtn.innerText = 'Copiado!';
-        setTimeout(() => {
-            copyBtn.innerText = 'Copiar';
-        }, 2000);
-    }
-</script>
+        function calculate() {
+            if (currentInput === '') return;
+            try {
+                // Avalia a expressão matemática. Usa eval() com cautela, pois pode ser um risco de segurança em outras aplicações.
+                // Para este caso simples, é aceitável.
+                result = eval(currentInput);
+                display.textContent = result;
+                currentInput = result.toString();
+            } catch (error) {
+                display.textContent = 'Erro';
+                currentInput = '';
+            }
+        }
+    </script>
 
 </body>
 </html>
+
